@@ -10,11 +10,11 @@
    ============================================ */
 :root {
     /* Brand Colors */
-    --crimson:        #C82A2A;
-    --crimson-dark:   #A82020;
-    --crimson-mid:    #D94040;
-    --crimson-light:  #FDEAEA;
-    --crimson-ghost:  #FDF3F3;
+--crimson:       #0E7C86;   /* deep teal */
+--crimson-dark:  #0B646D;   /* dark teal */
+--crimson-mid:   #1A99A5;   /* medium teal */
+--crimson-light: #E4F5F7;   /* pale teal bg */
+--crimson-ghost: #F0FAFB;   /* ghost teal */
 
     /* Semantic */
     --success:        #0F8A4E;
@@ -46,7 +46,7 @@
     --shadow-md:      0 4px 20px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
     --shadow-lg:      0 10px 40px rgba(0,0,0,0.10), 0 4px 16px rgba(0,0,0,0.06);
     --shadow-xl:      0 20px 60px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.06);
-    --shadow-crimson: 0 4px 20px rgba(200,42,42,0.25);
+    --shadow-crimson: 0 4px 20px rgba(30,111,219,0.25);
 
     /* Radius */
     --r-sm:   6px;
