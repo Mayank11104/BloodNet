@@ -1,0 +1,50 @@
+# ============================================
+#         BLOODNET - .gitignore
+# ============================================
+
+# Environment & Credentials
+env.php
+.env
+.env.local
+
+# API Keys (Mailjet, Fast2SMS)
+api/keys.php
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# PHP Logs & Cache
+*.log
+*.cache
+error_log
+php_errors.log
+
+# XAMPP Specific
+/logs/
+
+# Node (if you add any tools later)
+node_modules/
+npm-debug.log
+
+# Composer (if used later)
+vendor/
+composer.lock
+
+# Temp & Backup Files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Database Dumps (never commit DB credentials)
+*.sql.bak
+database_backup/
+test.php
