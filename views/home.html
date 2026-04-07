@@ -1,101 +1,101 @@
-<!-- HERO -->
-<div class="hero">
-    <div class="hero-content">
-        <div class="hero-badge">🩸 India's Blood Network</div>
-        <h1>Save Lives with <span>BloodNet</span></h1>
-        <p>Connecting blood donors with patients across 12 cities in real-time. Every drop counts, every second matters.</p>
-        <div class="hero-buttons">
-            <a href="#!/donors" class="btn btn-lg btn-white">
-                <i class="fas fa-search"></i> Find Donors
-            </a>
-            <a href="#!/register" class="btn btn-lg btn-ghost">
-                <i class="fas fa-heart"></i> Become a Donor
-            </a>
-            <a href="#!/request" class="btn btn-lg btn-ghost">
-                <i class="fas fa-hand-holding-heart"></i> Request Blood
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- STATS BAR -->
-<div class="stats-bar">
-    <div class="stat-item" ng-repeat="s in stats">
-        <i ng-class="s.icon"></i>
-        <span class="stat-value">{{s.value}}</span>
-        <span class="stat-label">{{s.label}}</span>
-    </div>
-</div>
-
-<!-- BLOOD STOCK SUMMARY -->
-<div class="page-wrapper">
-    <div class="section-title">National Blood Stock</div>
-    <p class="section-subtitle">Total units available across all 12 cities</p>
-
-    <div class="stock-grid">
-        <div class="stock-card"
-             ng-repeat="s in stockSummary"
-             ng-class="{'critical': s.total <= 20, 'low': s.total <= 50 && s.total > 20, 'good': s.total > 50}">
-            <div class="blood-type">{{s.blood_group}}</div>
-            <div class="units">{{s.total}}</div>
-            <div class="units-label">Total Units</div>
-            <span ng-if="s.blood_group === 'O-'" class="badge badge-universal" style="margin-top:8px">
-                Universal Donor
-            </span>
-            <span ng-if="s.total <= 20" class="badge badge-critical" style="margin-top:8px">
-                ⚠ Critical
-            </span>
-        </div>
-    </div>
-
-    <!-- HOW IT WORKS -->
-    <div style="margin-top: 50px;">
-        <div class="section-title">How BloodNet Works</div>
-        <p class="section-subtitle">Simple, fast and life-saving</p>
-
-        <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:25px; margin-top:20px;">
-            <div class="card" style="text-align:center; border-top: 4px solid var(--primary);">
-                <div style="font-size:40px; margin-bottom:15px;">📝</div>
-                <h3 style="font-size:17px; font-weight:700; margin-bottom:10px;">Register as Donor</h3>
-                <p style="color:var(--gray); font-size:14px;">Sign up with your blood group and city. Complete the health questionnaire to get verified.</p>
-            </div>
-            <div class="card" style="text-align:center; border-top: 4px solid var(--primary);">
-                <div style="font-size:40px; margin-bottom:15px;">🔍</div>
-                <h3 style="font-size:17px; font-weight:700; margin-bottom:10px;">Find & Request Blood</h3>
-                <p style="color:var(--gray); font-size:14px;">Search donors by blood group and city. Submit a request and get auto-assigned to the nearest bank.</p>
-            </div>
-            <div class="card" style="text-align:center; border-top: 4px solid var(--primary);">
-                <div style="font-size:40px; margin-bottom:15px;">🏆</div>
-                <h3 style="font-size:17px; font-weight:700; margin-bottom:10px;">Earn Credits & Rewards</h3>
-                <p style="color:var(--gray); font-size:14px;">Get 10 credits per donation. Reach 100 credits to earn a badge and special gift from BloodNet!</p>
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🩸 India's Blood Network</div>
+            <h1>Save Lives with <span>BloodNet</span></h1>
+            <p>Connecting blood donors with patients across 12 cities in real-time. Every drop counts, every second matters.</p>
+            <div class="hero-buttons">
+                <a href="#!/donors" class="btn btn-lg btn-white">
+                    <i class="fas fa-search"></i> Find Donors
+                </a>
+                <a href="#!/register" class="btn btn-lg btn-ghost">
+                    <i class="fas fa-heart"></i> Become a Donor
+                </a>
+                <a href="#!/request" class="btn btn-lg btn-ghost">
+                    <i class="fas fa-hand-holding-heart"></i> Request Blood
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- CITIES -->
-    <div style="margin-top: 50px;">
-        <div class="section-title">Our Cities</div>
-        <p class="section-subtitle">BloodNet is active across 12 major cities</p>
-        <div class="cities-grid">
-            <a href="#!/stock" class="city-card" ng-repeat="c in cities">
-                <div class="city-icon">🏙️</div>
-                <div class="city-name">{{c.name}}</div>
-                <div class="city-state">{{c.state}}</div>
-            </a>
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+        <div class="stat-item" ng-repeat="s in stats">
+            <i ng-class="s.icon"></i>
+            <span class="stat-value">{{s.value}}</span>
+            <span class="stat-label">{{s.label}}</span>
         </div>
     </div>
 
-    <!-- EMERGENCY BANNER -->
-    <div style="margin-top:50px; background:linear-gradient(135deg,#c0392b,#e74c3c);
-                border-radius:var(--radius); padding:40px; text-align:center; color:white;">
-        <h2 style="font-size:26px; font-weight:800; margin-bottom:10px;">
-            🚨 Emergency Blood Required?
-        </h2>
-        <p style="opacity:0.9; margin-bottom:25px; font-size:16px;">
-            Submit an emergency request and get highest priority auto-assignment within minutes.
-        </p>
-        <a href="#!/request" class="btn btn-white btn-lg">
-            <i class="fas fa-ambulance"></i> Submit Emergency Request
-        </a>
+    <!-- BLOOD STOCK SUMMARY -->
+    <div class="page-wrapper">
+        <div class="section-title">National Blood Stock</div>
+        <p class="section-subtitle">Total units available across all 12 cities</p>
+
+        <div class="stock-grid">
+            <div class="stock-card"
+                ng-repeat="s in stockSummary"
+                ng-class="{'critical': s.total <= 20, 'low': s.total <= 50 && s.total > 20, 'good': s.total > 50}">
+                <div class="blood-type">{{s.blood_group}}</div>
+                <div class="units">{{s.total}}</div>
+                <div class="units-label">Total Units</div>
+                <span ng-if="s.blood_group === 'O-'" class="badge badge-universal" style="margin-top:8px">
+                    Universal Donor
+                </span>
+                <span ng-if="s.total <= 20" class="badge badge-critical" style="margin-top:8px">
+                    ⚠ Critical
+                </span>
+            </div>
+        </div>
+
+        <!-- HOW IT WORKS -->
+        <div style="margin-top: 50px;">
+            <div class="section-title">How BloodNet Works</div>
+            <p class="section-subtitle">Simple, fast and life-saving</p>
+
+            <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:25px; margin-top:20px;">
+                <div class="card" style="text-align:center; border-top: 4px solid var(--primary);">
+                    <div style="font-size:40px; margin-bottom:15px;">📝</div>
+                    <h3 style="font-size:17px; font-weight:700; margin-bottom:10px;">Register as Donor</h3>
+                    <p style="color:var(--gray); font-size:14px;">Sign up with your blood group and city. Complete the health questionnaire to get verified.</p>
+                </div>
+                <div class="card" style="text-align:center; border-top: 4px solid var(--primary);">
+                    <div style="font-size:40px; margin-bottom:15px;">🔍</div>
+                    <h3 style="font-size:17px; font-weight:700; margin-bottom:10px;">Find & Request Blood</h3>
+                    <p style="color:var(--gray); font-size:14px;">Search donors by blood group and city. Submit a request and get auto-assigned to the nearest bank.</p>
+                </div>
+                <div class="card" style="text-align:center; border-top: 4px solid var(--primary);">
+                    <div style="font-size:40px; margin-bottom:15px;">🏆</div>
+                    <h3 style="font-size:17px; font-weight:700; margin-bottom:10px;">Earn Credits & Rewards</h3>
+                    <p style="color:var(--gray); font-size:14px;">Get 10 credits per donation. Reach 100 credits to earn a badge and special gift from BloodNet!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CITIES -->
+        <div style="margin-top: 50px;">
+            <div class="section-title">Our Cities</div>
+            <p class="section-subtitle">BloodNet is active across 12 major cities</p>
+            <div class="cities-grid">
+                <a href="#!/stock" class="city-card" ng-repeat="c in cities">
+                    <div class="city-icon">🏙️</div>
+                    <div class="city-name">{{c.name}}</div>
+                    <div class="city-state">{{c.state}}</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- EMERGENCY BANNER -->
+        <div style="margin-top:50px; background:linear-gradient(135deg,#c0392b,#e74c3c);
+                    border-radius:var(--radius); padding:40px; text-align:center; color:white;">
+            <h2 style="font-size:26px; font-weight:800; margin-bottom:10px;">
+                🚨 Emergency Blood Required?
+            </h2>
+            <p style="opacity:0.9; margin-bottom:25px; font-size:16px;">
+                Submit an emergency request and get highest priority auto-assignment within minutes.
+            </p>
+            <a href="#!/request" class="btn btn-white btn-lg">
+                <i class="fas fa-ambulance"></i> Submit Emergency Request
+            </a>
+        </div>
     </div>
-</div>

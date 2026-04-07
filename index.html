@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BloodNet — Network of Life</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
@@ -15,27 +18,42 @@
     <!-- Navbar -->
     <nav class="navbar" ng-controller="NavCtrl">
         <div class="nav-brand">
-            <span class="brand-icon">🩸</span>
-            <span class="brand-name">BloodNet</span>
-            <span class="brand-tagline">Network of Life</span>
+            <div class="brand-logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <path d="M16 4 C16 4, 6 14, 6 20 C6 25.5 10.5 30 16 30 C21.5 30 26 25.5 26 20 C26 14 16 4 16 4Z" fill="#C82A2A"/>
+                    <path d="M16 10 C16 10, 10 17, 10 21 C10 24.3 12.7 27 16 27 C19.3 27 22 24.3 22 21 C22 17 16 10 16 10Z" fill="rgba(255,255,255,0.25)"/>
+                    <circle cx="13" cy="20" r="2" fill="rgba(255,255,255,0.4)"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">BloodNet</span>
+                <span class="brand-tagline">Network of Life</span>
+            </div>
         </div>
+
         <ul class="nav-links">
             <li><a href="#!/home"><i class="fas fa-home"></i> Home</a></li>
             <li><a href="#!/donors"><i class="fas fa-users"></i> Find Donors</a></li>
             <li><a href="#!/stock"><i class="fas fa-tint"></i> Blood Stock</a></li>
-            <li><a href="#!/request"><i class="fas fa-hand-holding-heart"></i> Request Blood</a></li>
-            <li><a href="#!/track"><i class="fas fa-search"></i> Track Request</a></li>
-            <li ng-if="!currentUser"><a href="#!/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-            <li ng-if="!currentUser"><a href="#!/register" class="btn-nav-register">Become a Donor</a></li>
+            <li><a href="#!/request"><i class="fas fa-hand-holding-heart"></i> Request</a></li>
+            <li><a href="#!/track"><i class="fas fa-search"></i> Track</a></li>
+            <li ng-if="!currentUser"><a href="#!/login" class="nav-link-login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            <li ng-if="!currentUser"><a href="#!/register" class="btn-nav-register"><i class="fas fa-heart"></i> Become a Donor</a></li>
             <li ng-if="currentUser" class="user-menu">
-                <span><i class="fas fa-user-circle"></i> {{currentUser.full_name}}</span>
+                <span class="user-chip">
+                    <span class="user-avatar-sm">{{currentUser.full_name[0]}}</span>
+                    {{currentUser.full_name}}
+                    <i class="fas fa-chevron-down" style="font-size:10px;opacity:0.6"></i>
+                </span>
                 <div class="dropdown">
                     <a href="#!/profile" ng-if="currentUser.role === 'donor'"><i class="fas fa-id-card"></i> My Profile</a>
                     <a href="#!/admin" ng-if="currentUser.role === 'admin'"><i class="fas fa-cog"></i> Dashboard</a>
-                    <a href ng-click="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    <div class="dropdown-divider"></div>
+                    <a href ng-click="logout()" class="dropdown-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </div>
             </li>
         </ul>
+
         <div class="nav-toggle" ng-click="toggleMenu()">
             <i class="fas fa-bars"></i>
         </div>
@@ -43,8 +61,13 @@
 
     <!-- Alert Banner -->
     <div class="alert-banner" ng-if="globalAlert" ng-class="globalAlert.type">
-        <span>{{globalAlert.message}}</span>
-        <button ng-click="clearAlert()">✕</button>
+        <div class="alert-inner">
+            <i class="fas" ng-class="{'fa-check-circle': globalAlert.type==='success', 'fa-exclamation-circle': globalAlert.type==='error', 'fa-info-circle': globalAlert.type==='info'}"></i>
+            <span>{{globalAlert.message}}</span>
+        </div>
+        <button ng-click="clearAlert()" class="alert-close">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
 
     <!-- Main Content -->
@@ -54,27 +77,67 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h3>🩸 BloodNet</h3>
-                <p>Connecting donors with patients.<br>Every drop counts.</p>
-            </div>
-            <div class="footer-links">
-                <h4>Quick Links</h4>
-                <a href="#!/home">Home</a>
-                <a href="#!/donors">Find Donors</a>
-                <a href="#!/request">Request Blood</a>
-                <a href="#!/track">Track Request</a>
-            </div>
-            <div class="footer-contact">
-                <h4>Emergency</h4>
-                <p><i class="fas fa-phone"></i> 1800-BLOODNET</p>
-                <p><i class="fas fa-envelope"></i> help@bloodnet.in</p>
-                <p><i class="fas fa-clock"></i> 24/7 Support</p>
+        <div class="footer-top">
+            <div class="footer-grid">
+                <div class="footer-brand-col">
+                    <div class="footer-logo">
+                        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                            <path d="M16 4 C16 4, 6 14, 6 20 C6 25.5 10.5 30 16 30 C21.5 30 26 25.5 26 20 C26 14 16 4 16 4Z" fill="#e05555"/>
+                            <path d="M16 10 C16 10, 10 17, 10 21 C10 24.3 12.7 27 16 27 C19.3 27 22 24.3 22 21 C22 17 16 10 16 10Z" fill="rgba(255,255,255,0.2)"/>
+                        </svg>
+                        <span>BloodNet</span>
+                    </div>
+                    <p class="footer-desc">Connecting donors with patients across India. Every donation is a second chance at life.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links-col">
+                    <h5>Platform</h5>
+                    <a href="#!/home">Home</a>
+                    <a href="#!/donors">Find Donors</a>
+                    <a href="#!/stock">Blood Stock</a>
+                    <a href="#!/request">Request Blood</a>
+                    <a href="#!/track">Track Request</a>
+                </div>
+
+                <div class="footer-links-col">
+                    <h5>Account</h5>
+                    <a href="#!/login">Login</a>
+                    <a href="#!/register">Become a Donor</a>
+                    <a href="#!/register-seeker">Register as Seeker</a>
+                </div>
+
+                <div class="footer-emergency-col">
+                    <h5>Emergency Contact</h5>
+                    <div class="emergency-card">
+                        <div class="emergency-badge">24/7</div>
+                        <div class="emergency-line">
+                            <i class="fas fa-phone-alt"></i>
+                            <span>1800-BLOODNET</span>
+                        </div>
+                        <div class="emergency-line">
+                            <i class="fas fa-envelope"></i>
+                            <span>help@bloodnet.in</span>
+                        </div>
+                        <div class="emergency-line">
+                            <i class="fas fa-clock"></i>
+                            <span>24/7 Support Available</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
         <div class="footer-bottom">
-            <p>© 2026 BloodNet. Saving Lives Every Second. 🩸</p>
+            <p>© 2026 BloodNet. Built to save lives, every second. <span class="footer-heart">♥</span></p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
         </div>
     </footer>
 
