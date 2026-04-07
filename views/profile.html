@@ -1,0 +1,126 @@
+<div class="page-wrapper">
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-avatar">{{user.full_name.charAt(0)}}</div>
+        <div class="profile-info">
+            <h2>{{user.full_name}}</h2>
+            <p><i class="fas fa-envelope"></i> {{user.email}} &nbsp;|&nbsp;
+               <i class="fas fa-phone"></i> {{user.phone}}</p>
+            <div class="profile-badges">
+                <span class="profile-badge" ng-if="profile">🩸 {{profile.blood_group}}</span>
+                <span class="profile-badge"><i class="fas fa-star"></i> {{profile.total_credits || 0}} Credits</span>
+                <span class="profile-badge" ng-if="profile.is_available == 1">✅ Available</span>
+                <span class="profile-badge" ng-if="profile.is_available == 0">⏳ Unavailable</span>
+            </div>
+        </div>
+        <div style="margin-left:auto;">
+            <button class="btn"
+                    ng-class="profile.is_available == 1 ? 'btn-outline' : 'btn-success'"
+                    ng-click="toggleAvailability()"
+                    style="border-color:white; color:white;">
+                <i class="fas" ng-class="profile.is_available==1 ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+                {{profile.is_available == 1 ? 'Mark Unavailable' : 'Mark Available'}}
+            </button>
+        </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:25px;">
+
+        <!-- Credits Progress -->
+        <div>
+            <div class="credits-bar-wrap">
+                <div class="credits-bar-label">
+                    <span>🏆 Credits Progress</span>
+                    <span style="color:var(--primary); font-weight:700;">
+                        {{(profile.total_credits || 0) % 100}}/100
+                    </span>
+                </div>
+                <div class="credits-bar-bg">
+                    <div class="credits-bar-fill"
+                         style="width: {{creditPercent()}}%"></div>
+                </div>
+                <div class="credits-note">
+                    {{100 - ((profile.total_credits || 0) % 100)}} more credits to earn your next reward! 🎁
+                </div>
+            </div>
+
+            <!-- Profile Details -->
+            <div class="card">
+                <div class="card-header"><h3>👤 Profile Details</h3></div>
+                <table style="width:100%; border-collapse:collapse;">
+                    <tr style="border-bottom:1px solid var(--light-gray);">
+                        <td style="padding:12px; color:var(--gray); font-size:13px; font-weight:600;">Blood Group</td>
+                        <td style="padding:12px; font-weight:700;">
+                            <span class="badge badge-blood">{{profile.blood_group}}</span>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--light-gray);">
+                        <td style="padding:12px; color:var(--gray); font-size:13px; font-weight:600;">Gender</td>
+                        <td style="padding:12px; font-weight:600;">{{profile.gender}}</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--light-gray);">
+                        <td style="padding:12px; color:var(--gray); font-size:13px; font-weight:600;">Weight</td>
+                        <td style="padding:12px; font-weight:600;">{{profile.weight_kg}} kg</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--light-gray);">
+                        <td style="padding:12px; color:var(--gray); font-size:13px; font-weight:600;">Last Donation</td>
+                        <td style="padding:12px; font-weight:600;">{{profile.last_donation_date || 'Not yet donated'}}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:12px; color:var(--gray); font-size:13px; font-weight:600;">Available From</td>
+                        <td style="padding:12px; font-weight:600;">{{profile.unavailable_until || 'Available Now'}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div>
+            <div class="card" style="margin-bottom:25px;">
+                <div class="card-header">
+                    <h3>🔔 Notifications</h3>
+                    <span class="badge badge-critical">{{notifications.length}}</span>
+                </div>
+                <div ng-if="notifications.length > 0">
+                    <div ng-repeat="n in notifications"
+                         style="padding:14px; border-bottom:1px solid var(--light-gray);
+                                background:{{n.is_read ? 'white' : '#fdf0ef'}}; border-radius:8px; margin-bottom:5px;">
+                        <div style="font-size:13px; font-weight:700; color:var(--dark);">{{n.subject}}</div>
+                        <div style="font-size:13px; color:var(--gray); margin-top:4px;">{{n.message}}</div>
+                        <div style="font-size:11px; color:var(--gray); margin-top:5px;">{{n.sent_at}}</div>
+                    </div>
+                </div>
+                <div class="empty-state" ng-if="notifications.length === 0">
+                    <i class="fas fa-bell-slash"></i>
+                    <p>No notifications yet</p>
+                </div>
+            </div>
+
+            <!-- Donation History -->
+            <div class="card">
+                <div class="card-header"><h3>🩸 Donation History</h3></div>
+                <div ng-if="donations.length > 0">
+                    <div ng-repeat="d in donations"
+                         style="display:flex; justify-content:space-between; align-items:center;
+                                padding:14px; border-bottom:1px solid var(--light-gray);">
+                        <div>
+                            <div style="font-weight:700; font-size:14px;">{{d.donation_date}}</div>
+                            <div style="font-size:13px; color:var(--gray);">{{d.bank_name}}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span class="badge badge-blood">{{d.blood_group}}</span>
+                            <div style="font-size:13px; color:var(--accent); font-weight:700; margin-top:5px;">
+                                +{{d.credits_earned}} credits
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="empty-state" ng-if="donations.length === 0">
+                    <i class="fas fa-tint"></i>
+                    <p>No donations yet. Visit your nearest BloodNet center!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

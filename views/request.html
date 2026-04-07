@@ -1,0 +1,174 @@
+<div class="page-wrapper">
+    <div style="max-width:700px; margin:0 auto;">
+        <div class="page-header">
+            <h1><span>Request</span> Blood</h1>
+            <p>Submit a blood request and get auto-assigned to the nearest bank</p>
+        </div>
+
+        <!-- Not logged in warning -->
+        <div class="form-note" ng-if="!isLoggedIn">
+            <i class="fas fa-info-circle"></i>
+            You need to <a href="#!/login" style="color:var(--primary); font-weight:600;">login</a>
+            or <a href="#!/register" style="color:var(--primary); font-weight:600;">register as seeker</a>
+            to submit a blood request.
+        </div>
+
+        <!-- Success State -->
+        <div class="success-state" ng-if="submitted">
+            <div class="success-icon">✅</div>
+            <h2>Request Submitted!</h2>
+            <p>Your blood request has been received. Use the tracking ID below to monitor your request status.</p>
+            <div class="tracking-id-box">{{trackingId}}</div>
+            <p style="font-size:13px; color:var(--gray);">Save this ID to track your request anytime</p>
+            <div style="display:flex; gap:15px; justify-content:center; margin-top:20px; flex-wrap:wrap;">
+                <a href="#!/track" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Track Request
+                </a>
+                <button class="btn btn-outline" ng-click="submitted=false; step=1;">
+                    New Request
+                </button>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div ng-if="!submitted">
+
+            <!-- Step Progress -->
+            <div class="step-progress">
+                <div class="step" ng-class="{'active': step==1, 'done': step>1}">
+                    <div class="step-circle">
+                        <i class="fas fa-check" ng-if="step>1"></i>
+                        <span ng-if="step<=1">1</span>
+                    </div>
+                    <span class="step-label">Patient Info</span>
+                </div>
+                <div class="step-line" ng-class="{'done': step>1}"></div>
+                <div class="step" ng-class="{'active': step==2}">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">Blood Details</span>
+                </div>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="form-card" ng-if="step === 1">
+                <div class="form-title">
+                    <i class="fas fa-user" style="color:var(--primary);"></i>
+                    Patient Information
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Patient Name <span class="required">*</span></label>
+                        <input class="form-control" type="text"
+                               ng-model="formData.patient_name"
+                               placeholder="Full name of patient">
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Number <span class="required">*</span></label>
+                        <input class="form-control" type="tel"
+                               ng-model="formData.contact"
+                               placeholder="10-digit mobile number">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hospital Name <span class="required">*</span></label>
+                        <input class="form-control" type="text"
+                               ng-model="formData.hospital_name"
+                               placeholder="Name of hospital">
+                    </div>
+                    <div class="form-group">
+                        <label>City <span class="required">*</span></label>
+                        <select class="form-control" ng-model="formData.city_id">
+                            <option value="">Select City</option>
+                            <option ng-repeat="c in cities" value="{{c.id}}">{{c.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="text-align:right; margin-top:10px;">
+                    <button class="btn btn-primary" ng-click="nextStep()"
+                            ng-disabled="!formData.patient_name || !formData.contact ||
+                                         !formData.hospital_name || !formData.city_id">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="form-card" ng-if="step === 2">
+                <div class="form-title">
+                    <i class="fas fa-tint" style="color:var(--primary);"></i>
+                    Blood Requirements
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Blood Group <span class="required">*</span></label>
+                        <select class="form-control" ng-model="formData.blood_group">
+                            <option value="">Select Blood Group</option>
+                            <option ng-repeat="bg in bloodGroups" value="{{bg}}">{{bg}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Units Needed <span class="required">*</span></label>
+                        <input class="form-control" type="number"
+                               ng-model="formData.units_needed"
+                               placeholder="Number of units" min="1" max="10">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Severity</label>
+                        <select class="form-control" ng-model="formData.severity">
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Incident Type (if emergency)</label>
+                        <select class="form-control" ng-model="formData.incident_type"
+                                ng-disabled="!formData.is_emergency">
+                            <option value="">Not an emergency</option>
+                            <option ng-repeat="t in incidentTypes" value="{{t}}">{{t}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Emergency Toggle -->
+                <div class="form-check" style="border: 2px solid {{formData.is_emergency ? '#e74c3c' : 'var(--border)'}};">
+                    <input type="checkbox" id="emergency" ng-model="formData.is_emergency">
+                    <label for="emergency">
+                        🚨 Mark as Emergency Request
+                        <span>Emergency requests get highest priority and immediate assignment</span>
+                    </label>
+                </div>
+
+                <div class="form-group" ng-if="formData.is_emergency">
+                    <label>Describe the Emergency</label>
+                    <textarea class="form-control" ng-model="formData.incident_desc"
+                              rows="3" placeholder="Briefly describe the emergency situation..."></textarea>
+                </div>
+
+                <div class="form-note">
+                    <i class="fas fa-robot"></i>
+                    <strong>Auto-Assignment:</strong> BloodNet will automatically assign the nearest
+                    blood bank with sufficient stock based on your city and severity.
+                </div>
+
+                <div style="display:flex; gap:15px; justify-content:space-between; margin-top:10px;">
+                    <button class="btn btn-outline" ng-click="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="btn btn-primary btn-lg" ng-click="submitRequest()"
+                            ng-disabled="!formData.blood_group || !formData.units_needed || submitting">
+                        <i class="fas fa-paper-plane" ng-if="!submitting"></i>
+                        <i class="fas fa-spinner fa-spin" ng-if="submitting"></i>
+                        {{submitting ? 'Submitting...' : 'Submit Request'}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

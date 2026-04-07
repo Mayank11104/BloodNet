@@ -47,4 +47,5 @@ composer.lock
 # Database Dumps (never commit DB credentials)
 *.sql.bak
 database_backup/
+#testing
 test.php

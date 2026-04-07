@@ -1,0 +1,295 @@
+<div class="admin-layout">
+
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+        <div class="admin-sidebar-title">Navigation</div>
+        <div class="admin-nav-item" ng-class="{active: activeTab=='dashboard'}" ng-click="setTab('dashboard')">
+            <i class="fas fa-chart-bar"></i> Dashboard
+        </div>
+        <div class="admin-nav-item" ng-class="{active: activeTab=='requests'}" ng-click="setTab('requests')">
+            <i class="fas fa-hand-holding-heart"></i> Blood Requests
+            <span ng-if="stats.pending > 0" class="badge badge-critical" style="margin-left:auto; font-size:11px;">
+                {{stats.pending}}
+            </span>
+        </div>
+        <div class="admin-nav-item" ng-class="{active: activeTab=='donors'}" ng-click="setTab('donors')">
+            <i class="fas fa-users"></i> Donors
+        </div>
+        <div class="admin-nav-item" ng-class="{active: activeTab=='stock'}" ng-click="setTab('stock')">
+            <i class="fas fa-tint"></i> Blood Stock
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="admin-content">
+
+        <!-- Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <div>
+                <h2 style="font-size:22px; font-weight:800;">Admin Dashboard</h2>
+                <p style="color:var(--gray); font-size:14px;">Welcome, {{user.full_name}}</p>
+            </div>
+            <button class="btn btn-outline btn-sm" ng-click="loadDashboard()">
+                <i class="fas fa-sync"></i> Refresh
+            </button>
+        </div>
+
+        <!-- DASHBOARD TAB -->
+        <div ng-if="activeTab === 'dashboard'">
+            <div class="admin-stats">
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon red"><i class="fas fa-users"></i></div>
+                    <div>
+                        <div class="admin-stat-value">{{stats.donors || 0}}</div>
+                        <div class="admin-stat-label">Total Donors</div>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon blue"><i class="fas fa-hand-holding-heart"></i></div>
+                    <div>
+                        <div class="admin-stat-value">{{stats.requests || 0}}</div>
+                        <div class="admin-stat-label">Total Requests</div>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon orange"><i class="fas fa-clock"></i></div>
+                    <div>
+                        <div class="admin-stat-value">{{stats.pending || 0}}</div>
+                        <div class="admin-stat-label">Pending Requests</div>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div>
+                        <div class="admin-stat-value">{{stats.critical || 0}}</div>
+                        <div class="admin-stat-label">Critical Stock</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="table-wrapper">
+                <div class="card-header" style="padding:20px 25px;">
+                    <h3>📋 Recent Blood Requests</h3>
+                    <button class="btn btn-sm btn-outline" ng-click="setTab('requests')">View All</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tracking ID</th>
+                            <th>Patient</th>
+                            <th>Blood Group</th>
+                            <th>City</th>
+                            <th>Severity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="r in requests | limitTo:8">
+                            <td style="font-weight:700; color:var(--primary); letter-spacing:1px;">
+                                {{r.tracking_id}}
+                            </td>
+                            <td>{{r.patient_name}}</td>
+                            <td><span class="badge badge-blood">{{r.blood_group}}</span></td>
+                            <td>{{r.city_name}}</td>
+                            <td>
+                                <span class="badge"
+                                      ng-class="{
+                                        'badge-critical': r.severity=='Critical',
+                                        'badge-pending':  r.severity=='High',
+                                        'badge-good':     r.severity=='Low'
+                                      }">
+                                    {{r.severity}}
+                                </span>
+                                <span ng-if="r.is_emergency==1" class="badge badge-emergency" style="margin-left:4px;">🚨</span>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      ng-class="{
+                                        'badge-pending':    r.status=='Pending',
+                                        'badge-processing': r.status=='Processing',
+                                        'badge-approved':   r.status=='Approved',
+                                        'badge-fulfilled':  r.status=='Fulfilled',
+                                        'badge-rejected':   r.status=='Rejected'
+                                      }">
+                                    {{r.status}}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn btn-sm btn-success"
+                                            ng-if="r.status=='Pending'"
+                                            ng-click="updateStatus(r, 'Approved')">
+                                        ✓ Approve
+                                    </button>
+                                    <button class="btn btn-sm btn-danger"
+                                            ng-if="r.status=='Pending'"
+                                            ng-click="updateStatus(r, 'Rejected')">
+                                        ✗ Reject
+                                    </button>
+                                    <button class="btn btn-sm btn-secondary"
+                                            ng-if="r.status=='Approved'"
+                                            ng-click="updateStatus(r, 'Fulfilled')">
+                                        ✓ Fulfilled
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- REQUESTS TAB -->
+        <div ng-if="activeTab === 'requests'">
+            <div class="table-wrapper">
+                <div class="card-header" style="padding:20px 25px;">
+                    <h3>🩸 All Blood Requests</h3>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tracking ID</th>
+                            <th>Patient</th>
+                            <th>Blood</th>
+                            <th>Units</th>
+                            <th>Hospital</th>
+                            <th>City</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="r in requests"
+                            ng-style="{'background': r.is_emergency==1 ? '#fff8f8' : ''}">
+                            <td style="font-weight:700; color:var(--primary); font-size:13px; letter-spacing:1px;">
+                                {{r.tracking_id}}
+                                <span ng-if="r.is_emergency==1" class="badge badge-emergency" style="margin-left:4px;">🚨</span>
+                            </td>
+                            <td>{{r.patient_name}}</td>
+                            <td><span class="badge badge-blood">{{r.blood_group}}</span></td>
+                            <td style="font-weight:700;">{{r.units_needed}}</td>
+                            <td>{{r.hospital_name}}</td>
+                            <td>{{r.city_name}}</td>
+                            <td>
+                                <span style="font-weight:700; color:var(--primary);">{{r.priority_score}}</span>
+                                <span style="font-size:12px; color:var(--gray);"> pts</span>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                      ng-class="{
+                                        'badge-pending':    r.status=='Pending',
+                                        'badge-processing': r.status=='Processing',
+                                        'badge-approved':   r.status=='Approved',
+                                        'badge-fulfilled':  r.status=='Fulfilled',
+                                        'badge-rejected':   r.status=='Rejected'
+                                      }">{{r.status}}</span>
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="btn btn-sm btn-success"
+                                            ng-if="r.status=='Pending' || r.status=='Processing'"
+                                            ng-click="updateStatus(r,'Approved')">Approve</button>
+                                    <button class="btn btn-sm btn-secondary"
+                                            ng-if="r.status=='Approved'"
+                                            ng-click="updateStatus(r,'Fulfilled')">Fulfilled</button>
+                                    <button class="btn btn-sm btn-danger"
+                                            ng-if="r.status=='Pending'"
+                                            ng-click="updateStatus(r,'Rejected')">Reject</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- DONORS TAB -->
+        <div ng-if="activeTab === 'donors'">
+            <div class="table-wrapper">
+                <div class="card-header" style="padding:20px 25px;">
+                    <h3>👤 All Registered Donors</h3>
+                    <span style="color:var(--gray); font-size:14px;">{{donors.length}} donors</span>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Blood Group</th>
+                            <th>City</th>
+                            <th>Contact</th>
+                            <th>Credits</th>
+                            <th>Last Donation</th>
+                            <th>Available</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="d in donors">
+                            <td style="font-weight:600;">{{d.full_name}}</td>
+                            <td><span class="badge badge-blood">{{d.blood_group}}</span></td>
+                            <td>{{d.city_name}}</td>
+                            <td>{{d.phone}}</td>
+                            <td>
+                                <span style="color:var(--accent); font-weight:700;">
+                                    <i class="fas fa-star"></i> {{d.total_credits}}
+                                </span>
+                            </td>
+                            <td>{{d.last_donation_date || '—'}}</td>
+                            <td>
+                                <span ng-if="d.is_available==1" class="badge badge-good">Yes</span>
+                                <span ng-if="d.is_available==0" class="badge badge-critical">No</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- STOCK TAB -->
+        <div ng-if="activeTab === 'stock'">
+            <div class="table-wrapper">
+                <div class="card-header" style="padding:20px 25px;">
+                    <h3>🩸 Blood Stock Management</h3>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>City</th>
+                            <th>Blood Group</th>
+                            <th>Current Units</th>
+                            <th>Status</th>
+                            <th>Update Units</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="s in stock"
+                            ng-class="{'critical': getStockClass(s.units_available)=='critical'}">
+                            <td style="font-weight:600;">{{s.city_name}}</td>
+                            <td><span class="badge badge-blood">{{s.blood_group}}</span></td>
+                            <td style="font-weight:700; color:var(--primary);">{{s.units_available}}</td>
+                            <td>
+                                <span ng-if="s.units_available <= 2" class="badge badge-critical">⚠ Critical</span>
+                                <span ng-if="s.units_available > 2 && s.units_available <= 5" class="badge badge-low">Low</span>
+                                <span ng-if="s.units_available > 5" class="badge badge-good">Good</span>
+                            </td>
+                            <td>
+                                <input type="number" ng-model="s.units_available" min="0"
+                                       style="width:80px; padding:7px 10px; border:2px solid var(--border);
+                                              border-radius:8px; font-weight:600; text-align:center;">
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" ng-click="updateStock(s)">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,78 @@
+<div class="page-wrapper">
+    <div class="page-header">
+        <h1><span>Blood Stock</span> Availability</h1>
+        <p>Real-time blood stock across all BloodNet centers</p>
+    </div>
+
+    <!-- City Filter -->
+    <div class="search-section" style="margin-bottom:30px;">
+        <div style="display:flex; gap:15px; align-items:flex-end; flex-wrap:wrap;">
+            <div class="form-group" style="flex:1; min-width:200px; margin:0;">
+                <label>Filter by City</label>
+                <select class="form-control" ng-model="selectedCity" ng-change="filterCity()">
+                    <option value="">All Cities</option>
+                    <option ng-repeat="c in cities" value="{{c.id}}">{{c.name}}, {{c.state}}</option>
+                </select>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <span class="badge" style="background:#fde8e8; color:#c0392b; padding:8px 14px;">
+                    🔴 Critical (≤2 units)
+                </span>
+                <span class="badge" style="background:#fef9e7; color:#d68910; padding:8px 14px;">
+                    🟡 Low (≤5 units)
+                </span>
+                <span class="badge" style="background:#d5f5e3; color:#1e8449; padding:8px 14px;">
+                    🟢 Good (>5 units)
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" ng-if="loading">
+        <div class="spinner"></div>
+        <span>Loading blood stock...</span>
+    </div>
+
+    <!-- City Blocks -->
+    <div ng-if="!loading">
+        <div ng-repeat="group in groupedStock" style="margin-bottom:35px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:15px;">
+                <div>
+                    <h3 style="font-size:20px; font-weight:800; color:var(--dark);">
+                        🏙️ {{group.city}}
+                        <span style="font-size:13px; font-weight:500; color:var(--gray);">— {{group.state}}</span>
+                    </h3>
+                    <p style="font-size:13px; color:var(--gray); margin-top:3px;">
+                        <i class="fas fa-hospital"></i> {{group.bank}} &nbsp;|&nbsp;
+                        <i class="fas fa-phone"></i> {{group.contact}}
+                    </p>
+                </div>
+            </div>
+            <div class="stock-grid">
+                <div class="stock-card"
+                     ng-repeat="s in group.stock"
+                     ng-class="getStockClass(s.units_available)">
+                    <div class="blood-type">{{s.blood_group}}</div>
+                    <div class="units">{{s.units_available}}</div>
+                    <div class="units-label">Units Available</div>
+                    <div style="margin-top:10px;">
+                        <span ng-if="s.units_available <= 2" class="badge badge-critical">⚠ Critical</span>
+                        <span ng-if="s.units_available > 2 && s.units_available <= 5" class="badge badge-low">Low</span>
+                        <span ng-if="s.units_available > 5" class="badge badge-good">Available</span>
+                    </div>
+                    <span ng-if="s.blood_group === 'O-'"
+                          class="badge badge-universal"
+                          style="display:block; margin-top:6px;">Universal</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty -->
+        <div class="empty-state" ng-if="groupedStock.length === 0">
+            <i class="fas fa-tint"></i>
+            <h3>No stock data found</h3>
+            <p>Please try a different city filter.</p>
+        </div>
+    </div>
+</div>

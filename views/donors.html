@@ -1,0 +1,100 @@
+<div class="page-wrapper">
+    <div class="page-header">
+        <h1><span>Find</span> Blood Donors</h1>
+        <p>Search available donors by blood group and city</p>
+    </div>
+
+    <!-- Search -->
+    <div class="search-section">
+        <div class="search-grid">
+            <div class="form-group">
+                <label>Blood Group</label>
+                <select class="form-control" ng-model="filter.blood_group">
+                    <option value="">All Blood Groups</option>
+                    <option ng-repeat="bg in bloodGroups" value="{{bg}}">{{bg}}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>City</label>
+                <select class="form-control" ng-model="filter.city_id">
+                    <option value="">All Cities</option>
+                    <option ng-repeat="c in cities" value="{{c.id}}">{{c.name}}, {{c.state}}</option>
+                </select>
+            </div>
+            <button class="btn btn-primary btn-lg" ng-click="searchDonors()">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" ng-if="loading">
+        <div class="spinner"></div>
+        <span>Searching donors...</span>
+    </div>
+
+    <!-- Results -->
+    <div ng-if="!loading && searched">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 style="font-weight:700; color:var(--dark);">
+                <span style="color:var(--primary);">{{donors.length}}</span> Donors Found
+            </h3>
+            <span ng-if="filter.blood_group" class="badge badge-blood">{{filter.blood_group}}</span>
+        </div>
+
+        <!-- Donor Cards -->
+        <div class="donors-grid" ng-if="donors.length > 0">
+            <div class="donor-card" ng-repeat="d in donors">
+                <div class="donor-card-header">
+                    <div class="donor-avatar">{{d.full_name.charAt(0)}}</div>
+                    <div>
+                        <div class="donor-name">{{d.full_name}}</div>
+                        <div class="donor-meta">
+                            <i class="fas fa-map-marker-alt"></i> {{d.city_name}}
+                        </div>
+                    </div>
+                    <span class="badge badge-blood" style="margin-left:auto;">{{d.blood_group}}</span>
+                </div>
+                <div class="donor-details">
+                    <div class="donor-detail-item">
+                        <span class="label">Gender</span>
+                        <span class="value">{{d.gender || 'N/A'}}</span>
+                    </div>
+                    <div class="donor-detail-item">
+                        <span class="label">Credits</span>
+                        <span class="value" style="color:var(--accent);">
+                            <i class="fas fa-star"></i> {{d.total_credits}}
+                        </span>
+                    </div>
+                    <div class="donor-detail-item">
+                        <span class="label">Last Donation</span>
+                        <span class="value">{{d.last_donation_date || 'First Time'}}</span>
+                    </div>
+                    <div class="donor-detail-item">
+                        <span class="label">Status</span>
+                        <span class="value" style="color:var(--success);">
+                            <i class="fas fa-check-circle"></i> Available
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty -->
+        <div class="empty-state" ng-if="donors.length === 0">
+            <i class="fas fa-user-slash"></i>
+            <h3>No donors found</h3>
+            <p>Try a different blood group or city. You can also check nearby cities.</p>
+            <a href="#!/register" class="btn btn-primary" style="margin-top:15px;">
+                <i class="fas fa-plus"></i> Be the First Donor
+            </a>
+        </div>
+    </div>
+
+    <!-- Initial State -->
+    <div class="empty-state" ng-if="!searched && !loading">
+        <i class="fas fa-tint" style="color:var(--primary); opacity:0.3;"></i>
+        <h3>Search for Donors</h3>
+        <p>Select a blood group and/or city above to find available donors.</p>
+    </div>
+</div>

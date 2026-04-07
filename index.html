@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html ng-app="bloodNetApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodNet — Network of Life</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar" ng-controller="NavCtrl">
+        <div class="nav-brand">
+            <span class="brand-icon">🩸</span>
+            <span class="brand-name">BloodNet</span>
+            <span class="brand-tagline">Network of Life</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#!/home"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#!/donors"><i class="fas fa-users"></i> Find Donors</a></li>
+            <li><a href="#!/stock"><i class="fas fa-tint"></i> Blood Stock</a></li>
+            <li><a href="#!/request"><i class="fas fa-hand-holding-heart"></i> Request Blood</a></li>
+            <li><a href="#!/track"><i class="fas fa-search"></i> Track Request</a></li>
+            <li ng-if="!currentUser"><a href="#!/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            <li ng-if="!currentUser"><a href="#!/register" class="btn-nav-register">Become a Donor</a></li>
+            <li ng-if="currentUser" class="user-menu">
+                <span><i class="fas fa-user-circle"></i> {{currentUser.full_name}}</span>
+                <div class="dropdown">
+                    <a href="#!/profile" ng-if="currentUser.role === 'donor'"><i class="fas fa-id-card"></i> My Profile</a>
+                    <a href="#!/admin" ng-if="currentUser.role === 'admin'"><i class="fas fa-cog"></i> Dashboard</a>
+                    <a href ng-click="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </li>
+        </ul>
+        <div class="nav-toggle" ng-click="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Alert Banner -->
+    <div class="alert-banner" ng-if="globalAlert" ng-class="globalAlert.type">
+        <span>{{globalAlert.message}}</span>
+        <button ng-click="clearAlert()">✕</button>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <div ng-view></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>🩸 BloodNet</h3>
+                <p>Connecting donors with patients.<br>Every drop counts.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="#!/home">Home</a>
+                <a href="#!/donors">Find Donors</a>
+                <a href="#!/request">Request Blood</a>
+                <a href="#!/track">Track Request</a>
+            </div>
+            <div class="footer-contact">
+                <h4>Emergency</h4>
+                <p><i class="fas fa-phone"></i> 1800-BLOODNET</p>
+                <p><i class="fas fa-envelope"></i> help@bloodnet.in</p>
+                <p><i class="fas fa-clock"></i> 24/7 Support</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 BloodNet. Saving Lives Every Second. 🩸</p>
+        </div>
+    </footer>
+
+</body>
+</html>

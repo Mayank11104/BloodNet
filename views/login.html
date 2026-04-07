@@ -1,0 +1,50 @@
+<div class="page-wrapper">
+    <div style="max-width:450px; margin:0 auto;">
+        <div style="text-align:center; margin-bottom:30px;">
+            <div style="font-size:50px; margin-bottom:10px;">🩸</div>
+            <h2 style="font-size:26px; font-weight:800; color:var(--dark);">Welcome Back</h2>
+            <p style="color:var(--gray);">Login to your BloodNet account</p>
+        </div>
+
+        <div class="form-card">
+            <div class="form-error" ng-if="loginError">
+                <i class="fas fa-exclamation-circle"></i> {{loginError}}
+            </div>
+
+            <form ng-submit="login()">
+                <div class="form-group">
+                    <label>Username or Email <span class="required">*</span></label>
+                    <input class="form-control" type="text"
+                           ng-model="loginData.username"
+                           placeholder="Enter username or email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password <span class="required">*</span></label>
+                    <input class="form-control" type="password"
+                           ng-model="loginData.password"
+                           placeholder="Enter password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg"
+                        style="width:100%; justify-content:center; margin-top:10px;"
+                        ng-disabled="loading">
+                    <i class="fas fa-sign-in-alt" ng-if="!loading"></i>
+                    <i class="fas fa-spinner fa-spin" ng-if="loading"></i>
+                    {{loading ? 'Logging in...' : 'Login'}}
+                </button>
+            </form>
+
+            <div style="text-align:center; margin-top:20px; padding-top:20px; border-top:1px solid var(--border);">
+                <p style="color:var(--gray); font-size:14px;">
+                    Want to donate blood?
+                    <a href="#!/register" style="color:var(--primary); font-weight:600;">Register as Donor</a>
+                </p>
+            </div>
+
+            <div style="margin-top:15px; background:var(--light); border-radius:var(--radius-sm);
+                        padding:12px; text-align:center; font-size:13px; color:var(--gray);">
+                <strong>Admin:</strong> admin / admin123
+            </div>
+        </div>
+    </div>
+</div>

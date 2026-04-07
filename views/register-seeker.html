@@ -1,0 +1,112 @@
+<div class="page-wrapper">
+    <div style="max-width:550px; margin:0 auto;">
+
+        <div style="text-align:center; margin-bottom:30px;">
+            <div style="font-size:50px; margin-bottom:10px;">🏥</div>
+            <h2 style="font-size:26px; font-weight:800; color:var(--dark);">Register as Blood Seeker</h2>
+            <p style="color:var(--gray);">Need blood? Create an account to submit and track requests.</p>
+        </div>
+
+        <!-- Toggle: Donor vs Seeker -->
+        <div style="display:flex; background:var(--light-gray); border-radius:30px;
+                    padding:5px; margin-bottom:30px; gap:5px;">
+            <a href="#!/register"
+               style="flex:1; text-align:center; padding:11px; border-radius:25px;
+                      font-weight:600; font-size:14px; color:var(--gray); transition:all 0.3s;">
+                🩸 Donor
+            </a>
+            <a href="#!/register/seeker"
+               style="flex:1; text-align:center; padding:11px; border-radius:25px;
+                      font-weight:600; font-size:14px; background:var(--primary);
+                      color:white; box-shadow:0 3px 10px rgba(192,57,43,0.3);">
+                🏥 Seeker
+            </a>
+        </div>
+
+        <div class="form-card">
+            <div class="form-title">
+                <i class="fas fa-user-plus" style="color:var(--primary);"></i>
+                Personal Information
+            </div>
+
+            <div class="form-error" ng-if="error">
+                <i class="fas fa-exclamation-circle"></i> {{error}}
+            </div>
+
+            <form ng-submit="register()">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name <span class="required">*</span></label>
+                        <input class="form-control" type="text"
+                               ng-model="formData.full_name"
+                               placeholder="Your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Username <span class="required">*</span></label>
+                        <input class="form-control" type="text"
+                               ng-model="formData.username"
+                               placeholder="Choose a username" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input class="form-control" type="email"
+                               ng-model="formData.email"
+                               placeholder="Your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone <span class="required">*</span></label>
+                        <input class="form-control" type="tel"
+                               ng-model="formData.phone"
+                               placeholder="10-digit mobile" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Password <span class="required">*</span></label>
+                        <input class="form-control" type="password"
+                               ng-model="formData.password"
+                               placeholder="Min 6 characters" required>
+                    </div>
+                    <div class="form-group">
+                        <label>City <span class="required">*</span></label>
+                        <select class="form-control" ng-model="formData.city_id" required>
+                            <option value="">Select your city</option>
+                            <option ng-repeat="c in cities" value="{{c.id}}">
+                                {{c.name}}, {{c.state}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-note" style="margin-top:10px;">
+                    <i class="fas fa-info-circle"></i>
+                    As a <strong>seeker</strong> you can submit blood requests and track them
+                    in real-time. No health check required.
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary btn-lg"
+                        style="width:100%; justify-content:center; margin-top:15px;"
+                        ng-disabled="loading">
+                    <i class="fas fa-user-plus" ng-if="!loading"></i>
+                    <i class="fas fa-spinner fa-spin" ng-if="loading"></i>
+                    {{loading ? 'Registering...' : 'Create Seeker Account'}}
+                </button>
+            </form>
+
+            <div style="text-align:center; margin-top:20px; padding-top:20px;
+                        border-top:1px solid var(--border);">
+                <p style="color:var(--gray); font-size:14px;">
+                    Already have an account?
+                    <a href="#!/login" style="color:var(--primary); font-weight:600;">Login here</a>
+                </p>
+                <p style="color:var(--gray); font-size:14px; margin-top:8px;">
+                    Want to donate blood instead?
+                    <a href="#!/register" style="color:var(--primary); font-weight:600;">Register as Donor</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
